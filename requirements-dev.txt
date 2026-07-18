@@ -1,5 +1,5 @@
 # Gelistirme ve test bagimliliklari
 # Not: semgrep Windows'ta pip ile desteklenmez; WSL veya Docker kullanin
 # (docker compose run semgrep-scanner). CI kendi adiminda kurar.
-pytest==7.4.0
+pytest==9.1.1
 pytest-cov==4.1.0

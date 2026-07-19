@@ -19,12 +19,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Uygulama kodunu kopyala (secure versiyonu)
 COPY app/secure/ .
 
+# Kalici veritabani icin veri dizini (volume mount noktasi)
+RUN mkdir -p /app/data && chown appuser:appuser /app/data
+
 # Guvenlik: root olmayan kullaniciya gec
 USER appuser
 
 # Docker icinde 0.0.0.0'a bind etmek gerekli
 ENV FLASK_HOST=0.0.0.0
 ENV FLASK_PORT=5000
+# Veritabani volume uzerinde tutulur; konteyner silinse de veri kalir
+ENV DATABASE_PATH=/app/data/app.db
 
 # Port ac
 EXPOSE 5000

@@ -10,10 +10,14 @@ services:
       - FLASK_ENV=development
       - API_SECRET_KEY=${API_SECRET_KEY:-dev-secret-key}
       - DEBUG_MODE=false
+      - DATABASE_PATH=/app/data/app.db
     env_file:
       # Hassas degiskenler .env'den okunur; dosya yoksa compose yine calisir
       - path: ../.env
         required: false
+    volumes:
+      # Kalici depolama: konteyner yeniden olusturulsa da veritabani korunur
+      - db-data:/app/data
     restart: unless-stopped
     networks:
       - app-network
@@ -39,3 +43,7 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  # SQLite veritabanini konteyner yasam dongusunden bagimsiz saklar
+  db-data:

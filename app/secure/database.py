@@ -1,14 +1,26 @@
 import sqlite3
 import logging
+import os
+
+from config import DATABASE_PATH
 
 # Loglama yapilandirmasi
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def get_connection():
+    """Yapilandirilan veritabani dosyasina baglanti ac"""
+    return sqlite3.connect(DATABASE_PATH)
+
+
 def init_db():
     """Veritabanini ve ornek tabloyu olustur"""
-    conn = sqlite3.connect("app.db")
+    # Veritabani dosyasinin dizini yoksa olustur (or. volume mount noktasi)
+    db_dir = os.path.dirname(DATABASE_PATH)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -29,14 +41,14 @@ def init_db():
     )
     conn.commit()
     conn.close()
-    logger.info("Veritabani basariyla olusturuldu")
+    logger.info("Veritabani basariyla olusturuldu: %s", DATABASE_PATH)
 
 
 def get_user_secure(username):
     """
     DUZELTILDI: Parametrik sorgu - SQL Injection imkansiz
     """
-    conn = sqlite3.connect("app.db")
+    conn = get_connection()
     cursor = conn.cursor()
     # Guvenli: ? placeholder ile parametrik sorgu
     cursor.execute(
